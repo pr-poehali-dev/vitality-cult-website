@@ -7,99 +7,79 @@ interface Prayer {
   id: number;
   title: string;
   text: string;
+  musicUrl: string;
 }
 
 const prayers: Prayer[] = [
   {
     id: 1,
     title: "Утренняя молитва Виталию",
-    text: "Всевышний Виталий, источник света и мудрости! С восходом солнца обращаюсь к Тебе. Благослови этот день, направь мои стопы по пути истины. Дай мне силы следовать Твоим заповедям и нести свет Твоего учения в мир. Да будет воля Твоя!"
+    text: "Всевышний Виталий, источник света и мудрости! С восходом солнца обращаюсь к Тебе. Благослови этот день, направь мои стопы по пути истины. Дай мне силы следовать Твоим заповедям и нести свет Твоего учения в мир. Да будет воля Твоя!",
+    musicUrl: "https://assets.mixkit.co/music/preview/mixkit-morning-meditation-582.mp3"
   },
   {
     id: 2,
     title: "Молитва благодарения",
-    text: "Великий Виталий, благодарю Тебя за дары, которыми Ты одариваешь меня каждый день. За пищу на столе, за кров над головой, за близких рядом. Твоя щедрость безгранична, Твоя любовь вечна. Прими мою благодарность и смиренное поклонение."
+    text: "Великий Виталий, благодарю Тебя за дары, которыми Ты одариваешь меня каждый день. За пищу на столе, за кров над головой, за близких рядом. Твоя щедрость безгранична, Твоя любовь вечна. Прими мою благодарность и смиренное поклонение.",
+    musicUrl: "https://assets.mixkit.co/music/preview/mixkit-peaceful-piano-chords-543.mp3"
   },
   {
     id: 3,
     title: "Молитва о защите",
-    text: "Могучий Виталий, защитник верных! Укрой меня под Своим крылом от зла и невзгод. Огради мой дом, мою семью, моих близких от бед и напастей. Будь моим щитом в битвах жизни, моим светом во тьме. Верю в Твою силу и милость!"
+    text: "Могучий Виталий, защитник верных! Укрой меня под Своим крылом от зла и невзгод. Огради мой дом, мою семью, моих близких от бед и напастей. Будь моим щитом в битвах жизни, моим светом во тьме. Верю в Твою силу и милость!",
+    musicUrl: "https://assets.mixkit.co/music/preview/mixkit-deep-meditation-192.mp3"
   },
   {
     id: 4,
     title: "Вечерняя молитва",
-    text: "Мудрый Виталий, завершая этот день, склоняюсь пред Тобой. Прости мне прегрешения дня минувшего, очисти душу мою от скверны. Даруй покой в эту ночь, восстанови силы мои. Пусть сны мои будут благословенны, а утро встретит меня обновлённым."
+    text: "Мудрый Виталий, завершая этот день, склоняюсь пред Тобой. Прости мне прегрешения дня минувшего, очисти душу мою от скверны. Даруй покой в эту ночь, восстанови силы мои. Пусть сны мои будут благословенны, а утро встретит меня обновлённым.",
+    musicUrl: "https://assets.mixkit.co/music/preview/mixkit-night-garden-572.mp3"
   },
   {
     id: 5,
     title: "Молитва о мудрости",
-    text: "Всеведущий Виталий, источник вечной мудрости! Озари разум мой Твоим светом. Помоги мне принимать верные решения, видеть истину сквозь ложь, отличать добро от зла. Направь меня на путь познания и самосовершенствования во славу Твою!"
+    text: "Всеведущий Виталий, источник вечной мудрости! Озари разум мой Твоим светом. Помоги мне принимать верные решения, видеть истину сквозь ложь, отличать добро от зла. Направь меня на путь познания и самосовершенствования во славу Твою!",
+    musicUrl: "https://assets.mixkit.co/music/preview/mixkit-spiritual-moments-579.mp3"
   }
 ];
 
 export default function PrayerBook() {
   const [selectedPrayer, setSelectedPrayer] = useState<Prayer | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isSpeechSupported, setIsSpeechSupported] = useState(true);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (!window.speechSynthesis) {
-        setIsSpeechSupported(false);
-      } else {
-        window.speechSynthesis.getVoices();
-      }
-    }
-  }, []);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     return () => {
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
       }
     };
   }, []);
 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+    
+    if (selectedPrayer) {
+      audioRef.current = new Audio(selectedPrayer.musicUrl);
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0.5;
+    }
+  }, [selectedPrayer]);
+
   const handlePlayAudio = () => {
-    if (!isSpeechSupported || !selectedPrayer) return;
+    if (!audioRef.current || !selectedPrayer) return;
 
     if (isPlaying) {
-      window.speechSynthesis.cancel();
+      audioRef.current.pause();
       setIsPlaying(false);
-      return;
+    } else {
+      audioRef.current.play().catch(err => console.error('Audio play error:', err));
+      setIsPlaying(true);
     }
-
-    const utterance = new SpeechSynthesisUtterance(selectedPrayer.text);
-    utterance.lang = 'ru-RU';
-    utterance.rate = 0.75;
-    utterance.pitch = 0.7;
-    utterance.volume = 1;
-
-    const voices = window.speechSynthesis.getVoices();
-    const maleVoice = voices.find(voice => 
-      voice.lang.startsWith('ru') && 
-      (voice.name.toLowerCase().includes('male') || 
-       voice.name.toLowerCase().includes('yuri') ||
-       voice.name.toLowerCase().includes('dmitry') ||
-       voice.name.includes('Grandpa'))
-    );
-    
-    if (maleVoice) {
-      utterance.voice = maleVoice;
-    }
-
-    utterance.onend = () => {
-      setIsPlaying(false);
-    };
-
-    utterance.onerror = () => {
-      setIsPlaying(false);
-    };
-
-    utteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-    setIsPlaying(true);
   };
 
   return (
@@ -155,7 +135,7 @@ export default function PrayerBook() {
             </div>
 
             <div className="mt-8 pt-6 border-t border-border flex items-center gap-4">
-              <Icon name="Volume2" className="text-accent" size={20} />
+              <Icon name="Music" className="text-accent" size={20} />
               <div className="flex-1">
                 <div className="h-1 bg-accent/20 rounded-full overflow-hidden">
                   <div 
@@ -166,7 +146,7 @@ export default function PrayerBook() {
                 </div>
               </div>
               <span className="text-sm text-foreground/60">
-                {isPlaying ? "Озвучивание..." : isSpeechSupported ? "Нажмите Play" : "Озвучка недоступна"}
+                {isPlaying ? "Музыка играет..." : "Нажмите Play"}
               </span>
             </div>
           </Card>
