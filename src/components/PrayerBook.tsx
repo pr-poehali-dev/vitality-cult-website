@@ -46,6 +46,7 @@ const prayers: Prayer[] = [
 export default function PrayerBook() {
   const [selectedPrayer, setSelectedPrayer] = useState<Prayer | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.5);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -66,9 +67,9 @@ export default function PrayerBook() {
     if (selectedPrayer) {
       audioRef.current = new Audio(selectedPrayer.musicUrl);
       audioRef.current.loop = true;
-      audioRef.current.volume = 0.5;
+      audioRef.current.volume = volume;
     }
-  }, [selectedPrayer]);
+  }, [selectedPrayer, volume]);
 
   const handlePlayAudio = () => {
     if (!audioRef.current || !selectedPrayer) return;
@@ -79,6 +80,14 @@ export default function PrayerBook() {
     } else {
       audioRef.current.play().catch(err => console.error('Audio play error:', err));
       setIsPlaying(true);
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
     }
   };
 
@@ -134,20 +143,43 @@ export default function PrayerBook() {
               <div className="absolute -right-4 bottom-0 text-6xl text-accent/20 font-serif">"</div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-border flex items-center gap-4">
-              <Icon name="Music" className="text-accent" size={20} />
-              <div className="flex-1">
-                <div className="h-1 bg-accent/20 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full bg-accent transition-all duration-300 ${
-                      isPlaying ? "w-full animate-pulse" : "w-0"
-                    }`}
-                  ></div>
+            <div className="mt-8 pt-6 border-t border-border space-y-4">
+              <div className="flex items-center gap-4">
+                <Icon name="Music" className="text-accent" size={20} />
+                <div className="flex-1">
+                  <div className="h-1 bg-accent/20 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full bg-accent transition-all duration-300 ${
+                        isPlaying ? "w-full animate-pulse" : "w-0"
+                      }`}
+                    ></div>
+                  </div>
                 </div>
+                <span className="text-sm text-foreground/60">
+                  {isPlaying ? "Музыка играет..." : "Нажмите Play"}
+                </span>
               </div>
-              <span className="text-sm text-foreground/60">
-                {isPlaying ? "Музыка играет..." : "Нажмите Play"}
-              </span>
+              
+              <div className="flex items-center gap-4">
+                <Icon name={volume === 0 ? "VolumeX" : volume < 0.5 ? "Volume1" : "Volume2"} className="text-accent" size={20} />
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="flex-1 h-2 bg-accent/20 rounded-full appearance-none cursor-pointer
+                    [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 
+                    [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent 
+                    [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(139,92,246,0.5)]
+                    [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full 
+                    [&::-moz-range-thumb]:bg-accent [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+                />
+                <span className="text-sm text-foreground/60 w-12 text-right">
+                  {Math.round(volume * 100)}%
+                </span>
+              </div>
             </div>
           </Card>
         ) : (
