@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
@@ -7,7 +7,6 @@ interface Prayer {
   id: number;
   title: string;
   text: string;
-  audioUrl?: string;
 }
 
 const prayers: Prayer[] = [
@@ -41,26 +40,49 @@ const prayers: Prayer[] = [
 export default function PrayerBook() {
   const [selectedPrayer, setSelectedPrayer] = useState<Prayer | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isSpeechSupported, setIsSpeechSupported] = useState(true);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !window.speechSynthesis) {
+      setIsSpeechSupported(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
 
   const handlePlayAudio = () => {
-    if (!audioRef.current) {
-      const audio = new Audio();
-      audio.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
-      audioRef.current = audio;
-      
-      audio.onended = () => {
-        setIsPlaying(false);
-      };
-    }
+    if (!isSpeechSupported || !selectedPrayer) return;
 
     if (isPlaying) {
-      audioRef.current.pause();
+      window.speechSynthesis.cancel();
       setIsPlaying(false);
-    } else {
-      audioRef.current.play();
-      setIsPlaying(true);
+      return;
     }
+
+    const utterance = new SpeechSynthesisUtterance(selectedPrayer.text);
+    utterance.lang = 'ru-RU';
+    utterance.rate = 0.85;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    utterance.onend = () => {
+      setIsPlaying(false);
+    };
+
+    utterance.onerror = () => {
+      setIsPlaying(false);
+    };
+
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+    setIsPlaying(true);
   };
 
   return (
@@ -127,7 +149,7 @@ export default function PrayerBook() {
                 </div>
               </div>
               <span className="text-sm text-foreground/60">
-                {isPlaying ? "Воспроизведение..." : "Нажмите Play"}
+                {isPlaying ? "Озвучивание..." : isSpeechSupported ? "Нажмите Play" : "Озвучка недоступна"}
               </span>
             </div>
           </Card>
