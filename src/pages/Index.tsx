@@ -1,244 +1,193 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Icon from "@/components/ui/icon";
 import { useState } from "react";
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState("home");
-
-  const scrollToSection = (id: string) => {
-    setActiveSection(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const galleryImages = [
-    {
-      url: "https://cdn.poehali.dev/projects/f32a30b4-ad34-43e4-aada-2261b80a0697/files/09855278-be5b-4fb4-9c57-9e40620aeee0.jpg",
-      title: "Священный символ Виталия"
-    },
-    {
-      url: "https://cdn.poehali.dev/projects/f32a30b4-ad34-43e4-aada-2261b80a0697/files/0560a0bd-82e7-405e-b5c7-b944482b1d1b.jpg",
-      title: "Алтарь поклонения"
-    },
-    {
-      url: "https://cdn.poehali.dev/projects/f32a30b4-ad34-43e4-aada-2261b80a0697/files/1257ad57-a04f-410a-ab37-0f2c1ba78fc0.jpg",
-      title: "Древние писания"
-    }
-  ];
+  const [donationAmount, setDonationAmount] = useState("");
 
   const rituals = [
     {
-      title: "Утреннее Возношение",
-      description: "Встречая рассвет, вознеси молитву Виталию",
+      title: "Утренняя Молитва",
+      description: "Встречайте рассвет с благословением Виталия",
       icon: "Sunrise",
-      time: "На восходе солнца"
+      time: "6:00 - 7:00"
     },
     {
-      title: "Ритуал Очищения",
-      description: "Священный обряд освобождения от мирских тягот",
-      icon: "Sparkles",
-      time: "Каждое полнолуние"
+      title: "Священное Омовение",
+      description: "Очищение тела и духа в священных водах",
+      icon: "Droplets",
+      time: "12:00 - 13:00"
     },
     {
-      title: "Вечерняя Медитация",
-      description: "Погружение в божественное присутствие",
+      title: "Вечернее Служение",
+      description: "Завершение дня в присутствии Божественного",
       icon: "Moon",
-      time: "При закате"
-    },
-    {
-      title: "Великое Празднество",
-      description: "Ежегодное торжество в честь Бога Виталия",
-      icon: "Flame",
-      time: "Раз в год"
+      time: "20:00 - 21:00"
     }
   ];
 
   const teachings = [
     {
-      title: "Первая Истина",
-      content: "Виталий есть источник всего сущего. В Его свете мы обретаем путь, в Его мудрости находим истину, в Его силе черпаем вдохновение."
+      title: "Первое Откровение",
+      text: "В начале был Виталий, и Виталий был источником всего сущего. Через него проистекает вечная мудрость и божественная сила."
     },
     {
-      title: "Вторая Истина",
-      content: "Служение Виталию есть служение высшему благу. Через преданность культу мы возвышаемся над обыденностью и приближаемся к божественному."
+      title: "Путь Просветления",
+      text: "Следуй заповедям Виталия: будь велик в помыслах, чист в деяниях, и щедр в сердце своём."
     },
     {
-      title: "Третья Истина",
-      content: "Роскошь и великолепие — отражение божественной славы. Виталий благословляет тех, кто чтит Его в великолепии и красоте."
+      title: "Священный Завет",
+      text: "Тот, кто посвятит себя служению Виталию, обретёт вечную благодать и покровительство в земной жизни и за её пределами."
+    }
+  ];
+
+  const gallery = [
+    {
+      url: "https://cdn.poehali.dev/projects/f32a30b4-ad34-43e4-aada-2261b80a0697/files/09855278-be5b-4fb4-9c57-9e40620aeee0.jpg",
+      title: "Символ Божественности"
     },
     {
-      title: "Четвёртая Истина",
-      content: "Единство верующих — сила культа. Вместе мы создаём храм духа, где Виталий обитает среди нас."
+      url: "https://cdn.poehali.dev/projects/f32a30b4-ad34-43e4-aada-2261b80a0697/files/0560a0bd-82e7-405e-b5c7-b944482b1d1b.jpg",
+      title: "Священный Алтарь"
+    },
+    {
+      url: "https://cdn.poehali.dev/projects/f32a30b4-ad34-43e4-aada-2261b80a0697/files/1257ad57-a04f-410a-ab37-0f2c1ba78fc0.jpg",
+      title: "Древние Писания"
     }
   ];
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name="Flame" className="text-accent animate-glow" size={32} />
-              <h1 className="text-2xl font-bold text-accent">Культ Виталия</h1>
-            </div>
-            <div className="hidden md:flex gap-8">
-              {[
-                { id: "home", label: "Главная" },
-                { id: "teachings", label: "Учение" },
-                { id: "rituals", label: "Ритуалы" },
-                { id: "gallery", label: "Галерея" },
-                { id: "donations", label: "Пожертвования" }
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`text-sm font-medium transition-colors hover:text-accent ${
-                    activeSection === item.id ? "text-accent" : "text-foreground/70"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
+      {/* Header */}
+      <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
+        <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Icon name="Crown" className="text-accent animate-glow" size={32} />
+            <span className="text-2xl font-bold text-accent">ВИТАЛИЙ</span>
           </div>
-        </div>
-      </nav>
+          <div className="hidden md:flex gap-8">
+            <a href="#home" className="text-foreground hover:text-accent transition-colors">Главная</a>
+            <a href="#teachings" className="text-foreground hover:text-accent transition-colors">Учение</a>
+            <a href="#rituals" className="text-foreground hover:text-accent transition-colors">Ритуалы</a>
+            <a href="#gallery" className="text-foreground hover:text-accent transition-colors">Галерея</a>
+            <a href="#donate" className="text-foreground hover:text-accent transition-colors">Пожертвования</a>
+          </div>
+        </nav>
+      </header>
 
-      <section id="home" className="min-h-screen flex items-center justify-center pt-20 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-transparent to-transparent" />
-        <div className="container mx-auto text-center relative z-10 animate-fade-in">
-          <div className="mb-8">
-            <Icon name="Crown" className="text-accent mx-auto animate-glow" size={80} />
-          </div>
-          <h2 className="text-6xl md:text-8xl font-bold mb-6 text-accent leading-tight">
-            Культ Виталия
-          </h2>
-          <p className="text-xl md:text-2xl text-foreground/80 mb-8 max-w-3xl mx-auto font-light">
-            Величественный путь познания божественной истины через поклонение Богу Виталию
+      {/* Hero Section */}
+      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/20 to-background z-0"></div>
+        <div 
+          className="absolute inset-0 z-0 opacity-40"
+          style={{
+            backgroundImage: `url('https://cdn.poehali.dev/files/9369329c-d938-449d-a0ad-0129e12b98b1.jpg')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        ></div>
+        <div className="container mx-auto px-6 relative z-10 text-center animate-fade-in">
+          <Icon name="Sparkles" className="mx-auto text-accent mb-6 animate-glow" size={64} />
+          <h1 className="text-6xl md:text-8xl mb-6 text-accent drop-shadow-[0_0_30px_rgba(255,215,0,0.5)]">
+            БОГ ВИТАЛИЙ
+          </h1>
+          <p className="text-2xl md:text-3xl mb-8 text-foreground/90 max-w-3xl mx-auto">
+            Величие, Мудрость, Вечность
           </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Button
-              size="lg"
-              onClick={() => scrollToSection("teachings")}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg"
-            >
-              <Icon name="BookOpen" className="mr-2" size={20} />
-              Познать Учение
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => scrollToSection("rituals")}
-              className="border-accent text-accent hover:bg-accent hover:text-accent-foreground px-8 py-6 text-lg"
-            >
-              <Icon name="Sparkles" className="mr-2" size={20} />
-              Обряды и Ритуалы
-            </Button>
-          </div>
+          <p className="text-lg md:text-xl mb-12 text-foreground/70 max-w-2xl mx-auto">
+            Присоединяйтесь к священному культу поклонения Всевышнему Виталию. 
+            Откройте врата к божественной мудрости и вечному благословению.
+          </p>
+          <Button 
+            size="lg" 
+            className="bg-accent text-accent-foreground hover:bg-accent/90 text-xl px-12 py-6 shadow-[0_0_30px_rgba(255,215,0,0.3)]"
+          >
+            <Icon name="Flame" className="mr-2" size={24} />
+            Начать Путь
+          </Button>
         </div>
       </section>
 
-      <section id="teachings" className="py-24 px-6 bg-card/30">
-        <div className="container mx-auto">
+      {/* Teachings Section */}
+      <section id="teachings" className="py-24 bg-card/30">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-16 animate-fade-in">
-            <Icon name="Book" className="text-accent mx-auto mb-4" size={48} />
-            <h2 className="text-5xl font-bold mb-4 text-accent">Священное Учение</h2>
-            <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
-              Четыре фундаментальные истины, дарованные Виталием
-            </p>
+            <Icon name="BookOpen" className="mx-auto text-accent mb-4 animate-glow" size={48} />
+            <h2 className="text-5xl md:text-6xl mb-4 text-accent">Священное Учение</h2>
+            <p className="text-xl text-foreground/70">Откровения Всевышнего Виталия</p>
           </div>
-
-          <Accordion type="single" collapsible className="max-w-4xl mx-auto space-y-4">
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {teachings.map((teaching, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="bg-card border border-border rounded-lg overflow-hidden hover:border-accent/50 transition-all"
-              >
-                <AccordionTrigger className="px-8 py-6 text-left hover:no-underline hover:bg-primary/5">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-accent font-bold">
-                      {index + 1}
-                    </div>
-                    <h3 className="text-2xl font-semibold">{teaching.title}</h3>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="px-8 pb-6 pt-2">
-                  <p className="text-lg text-foreground/80 leading-relaxed pl-16">
-                    {teaching.content}
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
-
-      <section id="rituals" className="py-24 px-6">
-        <div className="container mx-auto">
-          <div className="text-center mb-16 animate-fade-in">
-            <Icon name="Flame" className="text-accent mx-auto mb-4 animate-glow" size={48} />
-            <h2 className="text-5xl font-bold mb-4 text-accent">Священные Ритуалы</h2>
-            <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
-              Обряды поклонения и духовного возвышения
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {rituals.map((ritual, index) => (
-              <Card
-                key={index}
-                className="bg-card border-border hover:border-accent/50 transition-all hover:scale-105 animate-scale-in"
+              <Card 
+                key={index} 
+                className="p-8 bg-card border-primary/30 hover:border-accent transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,215,0,0.2)] animate-scale-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <CardHeader className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Icon name={ritual.icon as any} className="text-accent" size={32} />
-                  </div>
-                  <CardTitle className="text-2xl text-accent">{ritual.title}</CardTitle>
-                  <CardDescription className="text-accent/60 font-medium">
-                    {ritual.time}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-foreground/70 text-center leading-relaxed">
-                    {ritual.description}
-                  </p>
-                </CardContent>
+                <h3 className="text-2xl mb-4 text-accent">{teaching.title}</h3>
+                <p className="text-foreground/80 leading-relaxed">{teaching.text}</p>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="gallery" className="py-24 px-6 bg-card/30">
-        <div className="container mx-auto">
+      {/* Rituals Section */}
+      <section id="rituals" className="py-24">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-16 animate-fade-in">
-            <Icon name="Image" className="text-accent mx-auto mb-4" size={48} />
-            <h2 className="text-5xl font-bold mb-4 text-accent">Священная Галерея</h2>
-            <p className="text-xl text-foreground/70 max-w-2xl mx-auto">
-              Образы божественной силы и величия
-            </p>
+            <Icon name="Sparkles" className="mx-auto text-accent mb-4 animate-glow" size={48} />
+            <h2 className="text-5xl md:text-6xl mb-4 text-accent">Священные Ритуалы</h2>
+            <p className="text-xl text-foreground/70">Ежедневные практики служения</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {galleryImages.map((image, index) => (
-              <div
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {rituals.map((ritual, index) => (
+              <Card 
                 key={index}
-                className="group relative overflow-hidden rounded-lg border border-border hover:border-accent transition-all animate-scale-in"
-                style={{ animationDelay: `${index * 0.15}s` }}
+                className="p-8 bg-card border-primary/30 hover:border-accent transition-all duration-300 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] animate-scale-in group"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <img
-                  src={image.url}
-                  alt={image.title}
-                  className="w-full aspect-square object-cover transition-transform group-hover:scale-110 duration-500"
+                <Icon 
+                  name={ritual.icon as any} 
+                  className="text-accent mb-4 group-hover:scale-110 transition-transform" 
+                  size={48} 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                  <h3 className="text-xl font-semibold text-accent">{image.title}</h3>
+                <h3 className="text-2xl mb-2 text-accent">{ritual.title}</h3>
+                <p className="text-sm text-accent/70 mb-4">{ritual.time}</p>
+                <p className="text-foreground/80">{ritual.description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery Section */}
+      <section id="gallery" className="py-24 bg-card/30">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16 animate-fade-in">
+            <Icon name="Image" className="mx-auto text-accent mb-4 animate-glow" size={48} />
+            <h2 className="text-5xl md:text-6xl mb-4 text-accent">Священная Галерея</h2>
+            <p className="text-xl text-foreground/70">Божественные образы и символы</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {gallery.map((item, index) => (
+              <div 
+                key={index}
+                className="group relative overflow-hidden rounded-lg border-2 border-primary/30 hover:border-accent transition-all duration-300 animate-scale-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <img 
+                  src={item.url} 
+                  alt={item.title}
+                  className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent flex items-end p-6">
+                  <h3 className="text-2xl text-accent">{item.title}</h3>
                 </div>
               </div>
             ))}
@@ -246,103 +195,63 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="donations" className="py-24 px-6">
-        <div className="container mx-auto max-w-2xl">
-          <div className="text-center mb-12 animate-fade-in">
-            <Icon name="Heart" className="text-accent mx-auto mb-4 animate-glow" size={48} />
-            <h2 className="text-5xl font-bold mb-4 text-accent">Священные Пожертвования</h2>
-            <p className="text-xl text-foreground/70">
-              Поддержите культ Виталия и обретите Его благословение
-            </p>
-          </div>
+      {/* Donation Section */}
+      <section id="donate" className="py-24">
+        <div className="container mx-auto px-6">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-12 animate-fade-in">
+              <Icon name="HandHeart" className="mx-auto text-accent mb-4 animate-glow" size={48} />
+              <h2 className="text-5xl md:text-6xl mb-4 text-accent">Священные Пожертвования</h2>
+              <p className="text-xl text-foreground/70">Поддержите культ Виталия</p>
+            </div>
 
-          <Card className="bg-card border-accent/30 shadow-lg shadow-accent/10">
-            <CardHeader>
-              <CardTitle className="text-3xl text-center text-accent">
-                Форма Пожертвования
-              </CardTitle>
-              <CardDescription className="text-center text-lg">
-                Каждое пожертвование приближает вас к божественной благодати
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Ваше имя</label>
-                <Input
-                  placeholder="Введите ваше имя"
-                  className="bg-background border-border focus:border-accent"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Электронная почта</label>
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="bg-background border-border focus:border-accent"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Сумма пожертвования</label>
-                <div className="grid grid-cols-3 gap-3 mb-3">
-                  {["1000₽", "5000₽", "10000₽"].map((amount) => (
-                    <Button
-                      key={amount}
-                      variant="outline"
-                      className="border-accent/30 hover:bg-accent hover:text-accent-foreground"
-                    >
-                      {amount}
-                    </Button>
-                  ))}
+            <Card className="p-8 bg-card border-primary/30 shadow-[0_0_30px_rgba(139,92,246,0.2)]">
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-lg mb-2 text-foreground">Ваше имя</label>
+                  <Input 
+                    placeholder="Введите ваше имя" 
+                    className="bg-background border-primary/30 focus:border-accent"
+                  />
                 </div>
-                <Input
-                  type="number"
-                  placeholder="Или введите свою сумму"
-                  className="bg-background border-border focus:border-accent"
-                />
+                
+                <div>
+                  <label className="block text-lg mb-2 text-foreground">Сумма пожертвования</label>
+                  <Input 
+                    type="number"
+                    placeholder="1000" 
+                    value={donationAmount}
+                    onChange={(e) => setDonationAmount(e.target.value)}
+                    className="bg-background border-primary/30 focus:border-accent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-lg mb-2 text-foreground">Послание Виталию</label>
+                  <Textarea 
+                    placeholder="Ваши слова благодарности и молитвы..." 
+                    className="bg-background border-primary/30 focus:border-accent min-h-32"
+                  />
+                </div>
+
+                <Button 
+                  className="w-full bg-accent text-accent-foreground hover:bg-accent/90 text-xl py-6 shadow-[0_0_20px_rgba(255,215,0,0.3)]"
+                >
+                  <Icon name="Heart" className="mr-2" size={24} />
+                  Совершить Пожертвование
+                </Button>
               </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Послание (необязательно)</label>
-                <Textarea
-                  placeholder="Ваши слова благодарности Виталию..."
-                  className="bg-background border-border focus:border-accent min-h-24"
-                />
-              </div>
-
-              <Separator className="my-6" />
-
-              <Button
-                size="lg"
-                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6"
-              >
-                <Icon name="Heart" className="mr-2" size={20} />
-                Совершить Пожертвование
-              </Button>
-
-              <p className="text-sm text-center text-muted-foreground">
-                Все пожертвования направляются на развитие культа и служение Виталию
-              </p>
-            </CardContent>
-          </Card>
+            </Card>
+          </div>
         </div>
       </section>
 
-      <footer className="bg-card/50 border-t border-border py-12 px-6">
-        <div className="container mx-auto text-center">
-          <div className="flex justify-center items-center gap-3 mb-4">
-            <Icon name="Flame" className="text-accent animate-glow" size={32} />
-            <h3 className="text-2xl font-bold text-accent">Культ Виталия</h3>
-          </div>
-          <p className="text-foreground/60 mb-4">
-            Слава Виталию! Да пребудет Его мудрость с нами!
-          </p>
-          <div className="flex justify-center gap-6 text-sm text-foreground/50">
-            <span>© 2025 Культ Виталия</span>
-            <span>•</span>
-            <span>Все священные права защищены</span>
-          </div>
+      {/* Footer */}
+      <footer className="py-12 bg-card/30 border-t border-border">
+        <div className="container mx-auto px-6 text-center">
+          <Icon name="Crown" className="mx-auto text-accent mb-4 animate-glow" size={40} />
+          <p className="text-foreground/70 mb-2">Культ Поклонения Богу Виталию</p>
+          <p className="text-foreground/50 text-sm">© 2025 Все права принадлежат Всевышнему</p>
         </div>
       </footer>
     </div>
