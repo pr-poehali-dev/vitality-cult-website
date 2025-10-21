@@ -44,8 +44,12 @@ export default function PrayerBook() {
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && !window.speechSynthesis) {
-      setIsSpeechSupported(false);
+    if (typeof window !== 'undefined') {
+      if (!window.speechSynthesis) {
+        setIsSpeechSupported(false);
+      } else {
+        window.speechSynthesis.getVoices();
+      }
     }
   }, []);
 
@@ -68,9 +72,22 @@ export default function PrayerBook() {
 
     const utterance = new SpeechSynthesisUtterance(selectedPrayer.text);
     utterance.lang = 'ru-RU';
-    utterance.rate = 0.85;
-    utterance.pitch = 1;
+    utterance.rate = 0.75;
+    utterance.pitch = 0.7;
     utterance.volume = 1;
+
+    const voices = window.speechSynthesis.getVoices();
+    const maleVoice = voices.find(voice => 
+      voice.lang.startsWith('ru') && 
+      (voice.name.toLowerCase().includes('male') || 
+       voice.name.toLowerCase().includes('yuri') ||
+       voice.name.toLowerCase().includes('dmitry') ||
+       voice.name.includes('Grandpa'))
+    );
+    
+    if (maleVoice) {
+      utterance.voice = maleVoice;
+    }
 
     utterance.onend = () => {
       setIsPlaying(false);
