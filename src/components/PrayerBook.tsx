@@ -65,11 +65,12 @@ export default function PrayerBook() {
     }
     
     if (selectedPrayer) {
-      audioRef.current = new Audio(selectedPrayer.musicUrl);
-      audioRef.current.loop = true;
-      audioRef.current.volume = volume;
+      const audio = new Audio(selectedPrayer.musicUrl);
+      audio.loop = true;
+      audio.volume = volume;
+      audioRef.current = audio;
     }
-  }, [selectedPrayer, volume]);
+  }, [selectedPrayer]);
 
   const handlePlayAudio = () => {
     if (!audioRef.current || !selectedPrayer) return;
