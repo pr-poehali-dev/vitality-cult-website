@@ -15,31 +15,31 @@ const prayers: Prayer[] = [
     id: 1,
     title: "Утренняя молитва Виталию",
     text: "Всевышний Виталий, источник света и мудрости! С восходом солнца обращаюсь к Тебе. Благослови этот день, направь мои стопы по пути истины. Дай мне силы следовать Твоим заповедям и нести свет Твоего учения в мир. Да будет воля Твоя!",
-    musicUrl: "https://assets.mixkit.co/music/preview/mixkit-morning-meditation-582.mp3"
+    musicUrl: "https://www.bensound.com/bensound-music/bensound-relaxing.mp3"
   },
   {
     id: 2,
     title: "Молитва благодарения",
     text: "Великий Виталий, благодарю Тебя за дары, которыми Ты одариваешь меня каждый день. За пищу на столе, за кров над головой, за близких рядом. Твоя щедрость безгранична, Твоя любовь вечна. Прими мою благодарность и смиренное поклонение.",
-    musicUrl: "https://assets.mixkit.co/music/preview/mixkit-peaceful-piano-chords-543.mp3"
+    musicUrl: "https://www.bensound.com/bensound-music/bensound-slowmotion.mp3"
   },
   {
     id: 3,
     title: "Молитва о защите",
     text: "Могучий Виталий, защитник верных! Укрой меня под Своим крылом от зла и невзгод. Огради мой дом, мою семью, моих близких от бед и напастей. Будь моим щитом в битвах жизни, моим светом во тьме. Верю в Твою силу и милость!",
-    musicUrl: "https://assets.mixkit.co/music/preview/mixkit-deep-meditation-192.mp3"
+    musicUrl: "https://www.bensound.com/bensound-music/bensound-deepblue.mp3"
   },
   {
     id: 4,
     title: "Вечерняя молитва",
     text: "Мудрый Виталий, завершая этот день, склоняюсь пред Тобой. Прости мне прегрешения дня минувшего, очисти душу мою от скверны. Даруй покой в эту ночь, восстанови силы мои. Пусть сны мои будут благословенны, а утро встретит меня обновлённым.",
-    musicUrl: "https://assets.mixkit.co/music/preview/mixkit-night-garden-572.mp3"
+    musicUrl: "https://www.bensound.com/bensound-music/bensound-tenderness.mp3"
   },
   {
     id: 5,
     title: "Молитва о мудрости",
     text: "Всеведущий Виталий, источник вечной мудрости! Озари разум мой Твоим светом. Помоги мне принимать верные решения, видеть истину сквозь ложь, отличать добро от зла. Направь меня на путь познания и самосовершенствования во славу Твою!",
-    musicUrl: "https://assets.mixkit.co/music/preview/mixkit-spiritual-moments-579.mp3"
+    musicUrl: "https://www.bensound.com/bensound-music/bensound-memories.mp3"
   }
 ];
 
@@ -73,14 +73,25 @@ export default function PrayerBook() {
   }, [selectedPrayer]);
 
   const handlePlayAudio = () => {
-    if (!audioRef.current || !selectedPrayer) return;
+    if (!selectedPrayer) return;
 
-    if (isPlaying) {
+    if (isPlaying && audioRef.current) {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play().catch(err => console.error('Audio play error:', err));
-      setIsPlaying(true);
+      if (!audioRef.current) {
+        const audio = new Audio(selectedPrayer.musicUrl);
+        audio.loop = true;
+        audio.volume = volume;
+        audioRef.current = audio;
+      }
+      
+      audioRef.current.play()
+        .then(() => setIsPlaying(true))
+        .catch(err => {
+          console.error('Audio play error:', err);
+          setIsPlaying(false);
+        });
     }
   };
 
