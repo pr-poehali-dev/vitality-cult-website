@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Icon from "@/components/ui/icon";
+import PrayerBook from "@/components/PrayerBook";
 import { useState } from "react";
 
 const Index = () => {
@@ -72,6 +73,7 @@ const Index = () => {
             <a href="#home" className="text-foreground hover:text-accent transition-colors">Главная</a>
             <a href="#teachings" className="text-foreground hover:text-accent transition-colors">Учение</a>
             <a href="#rituals" className="text-foreground hover:text-accent transition-colors">Ритуалы</a>
+            <a href="#prayers" className="text-foreground hover:text-accent transition-colors">Молитвы</a>
             <a href="#gallery" className="text-foreground hover:text-accent transition-colors">Галерея</a>
             <a href="#donate" className="text-foreground hover:text-accent transition-colors">Пожертвования</a>
           </div>
@@ -162,6 +164,18 @@ const Index = () => {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Prayer Book Section */}
+      <section id="prayers" className="py-24">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16 animate-fade-in">
+            <Icon name="BookMarked" className="mx-auto text-accent mb-4 animate-glow" size={48} />
+            <h2 className="text-5xl md:text-6xl mb-4 text-accent">Книга Молитв</h2>
+            <p className="text-xl text-foreground/70">Священные слова обращения к Виталию</p>
+          </div>
+          <PrayerBook />
         </div>
       </section>
 
