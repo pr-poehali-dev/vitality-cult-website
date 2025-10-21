@@ -47,60 +47,28 @@ export default function PrayerBook() {
   const [selectedPrayer, setSelectedPrayer] = useState<Prayer | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    }
-    
-    if (selectedPrayer) {
-      const audio = new Audio(selectedPrayer.musicUrl);
-      audio.loop = true;
-      audio.volume = volume;
-      audioRef.current = audio;
-    }
+    setIsPlaying(false);
   }, [selectedPrayer]);
 
   const handlePlayAudio = () => {
-    if (!selectedPrayer) return;
+    if (!audioRef.current) return;
 
-    if (isPlaying && audioRef.current) {
+    if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      if (!audioRef.current) {
-        const audio = new Audio(selectedPrayer.musicUrl);
-        audio.loop = true;
-        audio.volume = volume;
-        audioRef.current = audio;
-      }
-      
       audioRef.current.play()
         .then(() => setIsPlaying(true))
-        .catch(err => {
-          console.error('Audio play error:', err);
-          setIsPlaying(false);
-        });
+        .catch(err => console.error('Audio play error:', err));
     }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
   };
 
   return (
@@ -156,6 +124,16 @@ export default function PrayerBook() {
             </div>
 
             <div className="mt-8 pt-6 border-t border-border space-y-4">
+              <audio
+                ref={audioRef}
+                src={selectedPrayer.musicUrl}
+                loop
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onEnded={() => setIsPlaying(false)}
+                volume={volume}
+              />
+              
               <div className="flex items-center gap-4">
                 <Icon name="Music" className="text-accent" size={20} />
                 <div className="flex-1">
